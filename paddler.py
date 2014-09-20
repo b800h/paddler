@@ -83,6 +83,8 @@ ball_location = [40,12]
 stdscr.nodelay(1)
 collide = None
 score = 0
+curses.start_color()
+curses.init_pair(2, curses.COLOR_RED, curses.COLOR_YELLOW)
 
 while not(collide):
     
@@ -100,7 +102,7 @@ while not(collide):
     if input_command:
         scorediff = plot_paddle(input_command)
         score = score + scorediff
-        stdscr.addstr(0,20,"SCORE: " + str(int(score)))
+        stdscr.addstr(0,20,"SCORE: " + str(int(score)), curses.color_pair(2))
      
     check_paddle_collision() # is ball about to hit a paddle?
     collide = check_wall_collision() # is ball about to hit a wall?
@@ -109,4 +111,6 @@ curses.nocbreak()
 stdscr.keypad(0)
 curses.endwin()
 os.system('clear')
+print "You hit the side!"
+print ""
 print "Final score: " + str(int(score))
