@@ -1,64 +1,112 @@
 from time import sleep
 import curses
+import os
 
 def check_keys():
-    pass
+    charin = stdscr.getch()
+    if charin == ord('\\'):
+        return "\\"
+    if charin == ord('/'):
+        return "/"
+    return None
     
-def plot_paddle():
-    pass
+def plot_paddle(input_key):
+    stdscr.addstr(ball_location[1],ball_location[0],input_key)
+    scorechange = (1/ball_movement[2])
+    ball_movement[2] = ball_movement[2]-0.001
+    return scorechange
     
 def check_paddle_collision():
-    pass
+    in_key = stdscr.inch(ball_location[1],ball_location[0])
+    
+    if in_key == ord("/") and ball_movement[0] == 1 and ball_movement[1] == 0:
+        ball_movement[0] = 0
+        ball_movement[1] = -1
+        move_ball()
+    
+    elif in_key == ord("/") and ball_movement[0] == -1 and ball_movement[1] == 0:
+        ball_movement[0] = 0
+        ball_movement[1] = 1
+        move_ball()
+    
+    elif in_key == ord("/") and ball_movement[0] == 0 and ball_movement[1] == 1:
+        ball_movement[0] = -1
+        ball_movement[1] = 0
+        move_ball()
+    
+    elif in_key == ord("/") and ball_movement[0] == 0 and ball_movement[1] == -1:
+        ball_movement[0] = 1
+        ball_movement[1] = 0
+        move_ball()
+    
+    elif in_key == ord("\\") and ball_movement[0] == 1 and ball_movement[1] == 0:
+        ball_movement[0] = 0
+        ball_movement[1] = 1
+        move_ball()
+    
+    elif in_key == ord("\\") and ball_movement[0] == -1 and ball_movement[1] == 0:
+        ball_movement[0] = 0
+        ball_movement[1] = -1
+        move_ball()
+    
+    elif in_key == ord("\\") and ball_movement[0] == 0 and ball_movement[1] == 1:
+        ball_movement[0] = 1
+        ball_movement[1] = 0
+        move_ball()
+    
+    elif in_key == ord("\\") and ball_movement[0] == 0 and ball_movement[1] == -1:
+        ball_movement[0] = -1
+        ball_movement[1] = 0
+        move_ball()
+        
+    return
 
 def check_wall_collision():
-    pass
+    if ball_location[0] == 0 or ball_location[0] == 79 or ball_location[1] == 24 or ball_location[1] == 0:
+        return True
+    else:
+        return None
 
 def move_ball():
-    #stdscr.addstr(ball_location[1],ball_location[0], ' ') # erase ball
     ball_location[0] = ball_location[0] + ball_movement[0]
     ball_location[1] = ball_location[1] + ball_movement[1]
+
+def plot_ball():
     stdscr.addstr(ball_location[1],ball_location[0], "o") # plot ball
-    sleep(ball_movement[2])
 
 stdscr = curses.initscr()
 curses.noecho()
 curses.curs_set(0)
 quit = False
-ball_movement = [0,-1, 1] # x movement, y movement, delay (seconds)
+ball_movement = [-1,0, 0.1] # x movement, y movement, delay (seconds)
 ball_location = [40,12]
+stdscr.nodelay(1)
+collide = None
+score = 0
 
-while quit == False:
+while not(collide):
+    
+    plot_ball()
+    stdscr.refresh()
+    sleep(ball_movement[2])
+    
+    stdscr.addstr(ball_location[1],ball_location[0], ' ') # erase ball
+    move_ball()
     
     input_command = None
     collide = None
-    
     input_command = check_keys()
+
     if input_command:
-        plot_paddle(input_command)
+        scorediff = plot_paddle(input_command)
+        score = score + scorediff
+        stdscr.addstr(0,20,"SCORE: " + str(int(score)))
+     
     check_paddle_collision() # is ball about to hit a paddle?
     collide = check_wall_collision() # is ball about to hit a wall?
-    if collide:
-        quit = True
-    else:
-        move_ball()
-    stdscr.refresh()
-
+    
 curses.nocbreak()
 stdscr.keypad(0)
-curses.echo()
 curses.endwin()
-
-#
-#  These loops fill the pad with letters; this is
-# explained in the next section
-#for y in range(0, 100):
-#    for x in range(0, 100):
-#        try:
-#            pad.addch(y,x, ord('a') + (x*x+y*y) % 26)
-#        except curses.error:
-#            pass
-
-#  Displays a section of the pad in the middle of the screen
-#pad.refresh(0,0, 5,5, 20,75)
-
-raw_input()
+os.system('clear')
+print "Final score: " + str(int(score))
