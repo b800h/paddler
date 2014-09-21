@@ -2,6 +2,15 @@ from time import sleep
 import curses
 import os
 
+def plot_border():
+    for a in [0,79]:
+        for b in range(0,22):
+            stdscr.addstr(b,a,"*", curses.color_pair(1))
+    for a in [0,22]:
+        for b in range(0,80):
+            stdscr.addstr(a,b,"*", curses.color_pair(1))
+    #stdscr.addstr(22,78,"*", curses.color_pair(1))
+
 def check_keys():
     charin = stdscr.getch()
     if charin == ord('\\'):
@@ -85,6 +94,9 @@ collide = None
 score = 0
 curses.start_color()
 curses.init_pair(2, curses.COLOR_RED, curses.COLOR_YELLOW)
+curses.init_pair(1, curses.COLOR_YELLOW, curses.COLOR_RED)
+plot_border()
+stdscr.addstr(23,35,"SCORE: " + str(int(score)), curses.color_pair(2))
 
 while not(collide):
     
@@ -102,7 +114,7 @@ while not(collide):
     if input_command:
         scorediff = plot_paddle(input_command)
         score = score + scorediff
-        stdscr.addstr(0,20,"SCORE: " + str(int(score)), curses.color_pair(2))
+        stdscr.addstr(23,35,"SCORE: " + str(int(score)), curses.color_pair(2))
      
     check_paddle_collision() # is ball about to hit a paddle?
     collide = check_wall_collision() # is ball about to hit a wall?
