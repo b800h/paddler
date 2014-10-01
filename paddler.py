@@ -1,6 +1,7 @@
 from time import sleep
 import curses
 import os
+import ConfigParser
 
 def plot_border():
     for a in [0,79]:
@@ -22,7 +23,7 @@ def check_keys():
 def plot_paddle(input_key):
     stdscr.addstr(ball_location[1],ball_location[0],input_key)
     scorechange = (1/ball_movement[2])
-    ball_movement[2] = ball_movement[2]-0.001
+    ball_movement[2] = ball_movement[2]-0.004
     return scorechange
     
 def check_paddle_collision():
@@ -71,7 +72,7 @@ def check_paddle_collision():
     return
 
 def check_wall_collision():
-    if ball_location[0] == 0 or ball_location[0] == 79 or ball_location[1] == 24 or ball_location[1] == 0:
+    if ball_location[0] <= 0 or ball_location[0] >= 79 or ball_location[1] >= 22 or ball_location[1] <= 0:
         return True
     else:
         return None
