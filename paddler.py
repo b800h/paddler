@@ -1,7 +1,6 @@
 from time import sleep
 import curses
 import os
-import ConfigParser
 
 def plot_border():
     for a in [0,79]:
