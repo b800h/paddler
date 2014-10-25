@@ -123,6 +123,6 @@ curses.nocbreak()
 stdscr.keypad(0)
 curses.endwin()
 os.system('clear')
-print "You hit the side!"
+print "You hit the wall!"
 print ""
 print "Final score: " + str(int(score))
